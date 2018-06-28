@@ -2,8 +2,12 @@
 const csv=require('csvtojson')
 const lowerCase = require('lower-case')
 const optionDefinitions = [
-    { name: 'label', alias: 'l', type: String },
-    { name: 'exclude', alias: 'x', type: String }
+    { name: 'label', alias: 'l', type: String, defaultValue:''},
+    { name: 'exclude', alias: 'x', type: String, defaultValue:''},
+    { name: 'file', alias: 'f', type: String, defaultValue:'JIRA.csv' },
+    { name: 'everything', alias: 'e', type: Boolean, defaultValue:false },
+    { name: 'verbose', alias: 'v', type: Boolean, defaultValue:false},
+    
     
   ]
 const commandLineArgs = require('command-line-args')
@@ -35,8 +39,12 @@ let p3 = {  bugs : 0,
          }
 
 let csvHeaders = [];
-
-firstLine(`JIRA.csv`, { lineEnding: '\r' }).then((line) => { 
+if (options.verbose) { 
+    console.log("Options used-")
+    console.log(options)
+}
+//re-write headers that repeat the same name e.g. Label, Label becomes Label, Label1
+firstLine(options.file, { lineEnding: '\r' }).then((line) => { 
     var headers = line.split(`,`)
     var previous = ``
     var count = 1
@@ -52,9 +60,11 @@ firstLine(`JIRA.csv`, { lineEnding: '\r' }).then((line) => {
         }
     }
 
+    if (options.verbose) { 
+        console.log("Headers used-")
+        console.log(headers)
+    }
     extract(headers)
-    
-
 })
 
 function extract(headersArray) {
@@ -63,40 +73,37 @@ csv({noheader:false, headers:headersArray})
 .fromFile(`JIRA.csv`)
 .on('json',(jsonObj)=>{
 
+    if (options.verbose) { 
+        console.log("Processing "+jsonObj['Issue key']+"\r")
+
+    }
 
     process ('P1', options.label, jsonObj, p1)
     process ('P2', options.label, jsonObj, p2)
     process ('P3', options.label, jsonObj, p3)
 
-
 })
 .on('done',() => {
 
-    console.log(`Label used : ${options.label}   excluding ${options.exclude}`)
+    console.log(`Label used : ${options.label}   excluding : ${options.exclude}`)
     console.log(`P1 : tickets ${p1.tickets}   bugs ${p1.bugs}   story points ${p1.total}   sized stories ${p1.sizedTickets}   PBIs ${p1.PBI}`);
-
     console.log(`P2 : tickets ${p2.tickets}   bugs ${p2.bugs}   story points ${p2.total}   sized stories ${p2.sizedTickets}   PBIs ${p2.PBI}`);
-
     console.log(`P3 : tickets ${p3.tickets}   bugs ${p3.bugs}   story points ${p3.total}   sized stories ${p3.sizedTickets}   PBIs ${p3.PBI}`); 
-
-       
-
-       
-
     }
 )
 }
 
 function process(priority, label, data, target) {
 
-    if (data[`Status`] == `To Do`) {
-        if ((options.exclude =='' || data[`Reporter`]!= options.exclude) && data[`Priority`] == priority && data[`Status`] == `To Do`){
-
+    if (data[`Status`] === `To Do` || options.everything) {
+       if ((options.exclude =='' || data[`Reporter`]!= options.exclude) && data[`Priority`] == priority){
             isBug = false
-            if (lowerCase(data[`Labels1`])==label || 
+            if (label == '' || 
+                lowerCase(data[`Labels1`])==label || 
                 lowerCase(data[`Labels2`])==label || 
                 lowerCase(data[`Labels`])==label ) {
-                target.PBI++
+
+                    target.PBI++
                 if (data[`Issue Type`]==`Bug`) {
                     target.bugs++;
                     isBug = true
