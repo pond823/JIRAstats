@@ -9,9 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "command-line-args": "^5.0.2",
     "csv-array": "0.0.22",
     "csvtojson": "^1.1.9",
     "express": "^4.16.3",
+    "firstline": "^2.0.2",
     "handlebars": "^4.0.11",
     "lower-case": "^1.1.4"
   }
