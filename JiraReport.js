@@ -44,7 +44,7 @@ if (options.verbose) {
     console.log(options)
 }
 //re-write headers that repeat the same name e.g. Label, Label becomes Label, Label1
-firstLine(options.file, { lineEnding: '\r' }).then((line) => { 
+firstLine(options.file, { lineEnding: '\n' }).then((line) => { 
     var headers = line.split(`,`)
     var previous = ``
     var count = 1
@@ -86,9 +86,9 @@ csv({noheader:false, headers:headersArray})
 .on('done',() => {
 
     console.log(`Label used : ${options.label}   excluding : ${options.exclude}`)
-    console.log(`P1 : tickets ${p1.tickets}   bugs ${p1.bugs}   story points ${p1.total}   sized stories ${p1.sizedTickets}   PBIs ${p1.PBI}`);
-    console.log(`P2 : tickets ${p2.tickets}   bugs ${p2.bugs}   story points ${p2.total}   sized stories ${p2.sizedTickets}   PBIs ${p2.PBI}`);
-    console.log(`P3 : tickets ${p3.tickets}   bugs ${p3.bugs}   story points ${p3.total}   sized stories ${p3.sizedTickets}   PBIs ${p3.PBI}`); 
+    console.log(`P1s : ${p1.PBI}   Bugs ${p1.bugs}   Backlog Estimated ${p1.sizedTickets}    Story Points ${p1.total}`);
+    console.log(`P2s : ${p2.PBI}   Bugs ${p2.bugs}   Backlog Estimated ${p2.sizedTickets}    Story Points ${p2.total}`);
+    console.log(`P3s : ${p2.PBI}   Bugs ${p3.bugs}   Backlog Estimated ${p3.sizedTickets}    Story Points ${p3.total}`); 
     }
 )
 }
