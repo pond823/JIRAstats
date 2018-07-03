@@ -6,7 +6,7 @@ Requires Node - https://nodejs.org/en/download/
 
 Once you've cloned or downloaded JIRAstats, go to the installed directory and use
 
-node install 
+npm install 
 
 Then in JIRA do a query export from your project as CSV file into the JIRAstat install directory and type 
 
