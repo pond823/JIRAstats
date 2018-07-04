@@ -88,7 +88,7 @@ csv({noheader:false, headers:headersArray})
     console.log(`Label used : ${options.label}   excluding : ${options.exclude}`)
     console.log(`P1s : ${p1.PBI}   Bugs ${p1.bugs}   Backlog Estimated ${p1.sizedTickets}    Story Points ${p1.total}`);
     console.log(`P2s : ${p2.PBI}   Bugs ${p2.bugs}   Backlog Estimated ${p2.sizedTickets}    Story Points ${p2.total}`);
-    console.log(`P3s : ${p2.PBI}   Bugs ${p3.bugs}   Backlog Estimated ${p3.sizedTickets}    Story Points ${p3.total}`); 
+    console.log(`P3s : ${p3.PBI}   Bugs ${p3.bugs}   Backlog Estimated ${p3.sizedTickets}    Story Points ${p3.total}`); 
     }
 )
 }
