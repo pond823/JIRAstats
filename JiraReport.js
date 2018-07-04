@@ -6,7 +6,7 @@ const optionDefinitions = [
     { name: 'exclude', alias: 'x', type: String, defaultValue:''},
     { name: 'file', alias: 'f', type: String, defaultValue:'JIRA.csv' },
     { name: 'everything', alias: 'e', type: Boolean, defaultValue:false },
-    { name: 'verbose', alias: 'v', type: Boolean, defaultValue:false},
+    { name: 'verbose', alias: 'v', type: Boolean, defaultValue:false}
     
     
   ]
