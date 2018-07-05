@@ -6,8 +6,9 @@ const optionDefinitions = [
     { name: 'exclude', alias: 'x', type: String, defaultValue:''},
     { name: 'file', alias: 'f', type: String, defaultValue:'JIRA.csv' },
     { name: 'everything', alias: 'e', type: Boolean, defaultValue:false },
-    { name: 'verbose', alias: 'v', type: Boolean, defaultValue:false}
-    
+    { name: 'verbose', alias: 'v', type: Boolean, defaultValue:false},
+    { name: 'nolabel', alias: 'n', type: Boolean, defaultValue:false}
+
     
   ]
 const commandLineArgs = require('command-line-args')
@@ -98,12 +99,16 @@ function process(priority, label, data, target) {
     if (data[`Status`] === `To Do` || options.everything) {
        if ((options.exclude =='' || data[`Reporter`]!= options.exclude) && data[`Priority`] == priority){
             isBug = false
-            if (label == '' || 
+            if ((options.nolabel != true && (label == `` || 
                 lowerCase(data[`Labels1`])==label || 
                 lowerCase(data[`Labels2`])==label || 
-                lowerCase(data[`Labels`])==label ) {
+                lowerCase(data[`Labels`])==label )) || 
+                (options.nolabel === true && (
+                lowerCase(data[`Labels1`])==`` && 
+                lowerCase(data[`Labels2`])==`` && 
+                lowerCase(data[`Labels`])==`` ))){
 
-                    target.PBI++
+                target.PBI++
                 if (data[`Issue Type`]==`Bug`) {
                     target.bugs++;
                     isBug = true

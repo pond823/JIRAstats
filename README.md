@@ -26,3 +26,5 @@ Options
 
 -x exclude tickets with either the following label or report
 
+-n nolabel exclude tickets with labels of any value
+
