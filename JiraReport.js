@@ -15,7 +15,10 @@ const commandLineArgs = require('command-line-args')
 const firstLine = require('firstline')
 
 const options = commandLineArgs(optionDefinitions)  
+options.label = lowerCase(options.label)
 
+// added filter by Sprint name for Backlog Estimate & different sprint name for PBI 
+// Fix labels with Robyns file example
 
 let tickets =0;
 
