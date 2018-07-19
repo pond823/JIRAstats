@@ -7,6 +7,7 @@ const optionDefinitions = [
     { name: 'file', alias: 'f', type: String, defaultValue:'JIRA.csv' },
     { name: 'everything', alias: 'e', type: Boolean, defaultValue:false },
     { name: 'verbose', alias: 'v', type: Boolean, defaultValue:false},
+    { name: 'sprint', alias: 's', type: String, defaultValue:''},
     { name: 'nolabel', alias: 'n', type: Boolean, defaultValue:false}
 
     
@@ -18,7 +19,7 @@ const options = commandLineArgs(optionDefinitions)
 options.label = lowerCase(options.label)
 
 // added filter by Sprint name for Backlog Estimate & different sprint name for PBI 
-// Fix labels with Robyns file example
+
 
 let tickets =0;
 
@@ -89,7 +90,7 @@ csv({noheader:false, headers:headersArray})
 })
 .on('done',() => {
 
-    console.log(`Label used : ${options.label}   excluding : ${options.exclude}`)
+    console.log(`Label used : ${options.label}   excluding : ${options.exclude}   sprint : ${options.sprint}`)
     console.log(`P1s : ${p1.PBI}   Bugs ${p1.bugs}   Backlog Estimated ${p1.sizedTickets}    Story Points ${p1.total}`);
     console.log(`P2s : ${p2.PBI}   Bugs ${p2.bugs}   Backlog Estimated ${p2.sizedTickets}    Story Points ${p2.total}`);
     console.log(`P3s : ${p3.PBI}   Bugs ${p3.bugs}   Backlog Estimated ${p3.sizedTickets}    Story Points ${p3.total}`); 
@@ -110,23 +111,24 @@ function process(priority, label, data, target) {
                 lowerCase(data[`Labels1`])==`` && 
                 lowerCase(data[`Labels2`])==`` && 
                 lowerCase(data[`Labels`])==`` ))){
+                if (options.sprint =='' || lowerCase(data[`Sprint`]) == lowerCase(options.sprint)) {
+                    target.PBI++
+                    if (data[`Issue Type`]==`Bug`) {
+                        target.bugs++;
+                        isBug = true
+                    } else {
+                        
+                        target.tickets++;
+                    }
 
-                target.PBI++
-                if (data[`Issue Type`]==`Bug`) {
-                    target.bugs++;
-                    isBug = true
-                } else {
+                    value = data[`Custom field (Story Points)`]
                     
-                    target.tickets++;
+                    if (value != `` && !isBug) {
+                        target.total += parseInt(value);
+
+                        target.sizedTickets++;
+                    } 
                 }
-
-                value = data[`Custom field (Story Points)`]
-                
-                if (value != `` && !isBug) {
-                    target.total += parseInt(value);
-
-                    target.sizedTickets++;
-                } 
     
             }
 
