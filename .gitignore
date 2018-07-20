@@ -2,3 +2,5 @@ node_modules/
 *.csv
 .DS_Store
 package-lock.json
+config/local.json
+
