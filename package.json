@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "command-line-args": "^5.0.2",
+    "config": "^1.30.0",
     "csv-array": "0.0.22",
     "csvtojson": "^1.1.9",
     "express": "^4.16.3",

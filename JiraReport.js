@@ -18,6 +18,10 @@ const firstLine = require('firstline')
 const options = commandLineArgs(optionDefinitions)  
 options.label = lowerCase(options.label)
 
+var config = require('config');
+var sprints = config.get('Sprints')
+var useSprints = config.get('FilterOnSprints')
+
 // added filter by Sprint name for Backlog Estimate & different sprint name for PBI 
 
 
@@ -90,7 +94,7 @@ csv({noheader:false, headers:headersArray})
 })
 .on('done',() => {
 
-    console.log(`Label used : ${options.label}   excluding : ${options.exclude}   sprint : ${options.sprint}`)
+    console.log(`Label used : ${options.label}   excluding : ${options.exclude}   sprint : ${options.sprint} ${sprints}`)
     console.log(`P1s : ${p1.PBI}   Bugs ${p1.bugs}   Backlog Estimated ${p1.sizedTickets}    Story Points ${p1.total}`);
     console.log(`P2s : ${p2.PBI}   Bugs ${p2.bugs}   Backlog Estimated ${p2.sizedTickets}    Story Points ${p2.total}`);
     console.log(`P3s : ${p3.PBI}   Bugs ${p3.bugs}   Backlog Estimated ${p3.sizedTickets}    Story Points ${p3.total}`); 
@@ -111,7 +115,19 @@ function process(priority, label, data, target) {
                 lowerCase(data[`Labels1`])==`` && 
                 lowerCase(data[`Labels2`])==`` && 
                 lowerCase(data[`Labels`])==`` ))){
-                if (options.sprint =='' || lowerCase(data[`Sprint`]) == lowerCase(options.sprint)) {
+                
+                var inSprint = false
+                if (useSprints) {
+                    sprints.forEach(function(element) {
+                         if (lowerCase(data[`Sprint`]) == lowerCase(element)) {
+                            inSprint = true
+                        }
+                      });
+                } else {
+                    inSprint = true
+                }
+
+                if (inSprint || (useSprints == false && (options.sprint =='' || lowerCase(data[`Sprint`]) == lowerCase(options.sprint)))) {
                     target.PBI++
                     if (data[`Issue Type`]==`Bug`) {
                         target.bugs++;
