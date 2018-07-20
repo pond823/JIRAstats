@@ -75,7 +75,7 @@ firstLine(options.file, { lineEnding: '\n' }).then((line) => {
 function extract(headersArray) {
 
 csv({noheader:false, headers:headersArray})
-.fromFile(`JIRA.csv`)
+.fromFile(options.file)
 .on('json',(jsonObj)=>{
 
     if (options.verbose) { 
