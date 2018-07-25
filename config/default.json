@@ -1,4 +1,16 @@
-{
-	"Sprints" : ["sprint 1", "sprint 2", "sprint 3", "Parking lot"],
-	"FilterOnSprints" : true
-} 
+{ "reports" :
+	[{
+		"title" : "Outstanding P1 Bugs",
+		"filter" : ["Priority", "Issue Type", "Status"],
+		"Priority" : ["P1"],
+		"Issue Type" : ["Bug"],
+		"Status" : ["To do"]
+
+
+	},
+	{
+		"title" : "WILL NOT BE PROCESSED"
+
+	}
+	]
+}
