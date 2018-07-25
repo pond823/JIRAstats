@@ -82,33 +82,20 @@ function process(data) {
 
     reports.forEach(function (report) {
         match = false
-
         verboseLog(`Report - ${report.title}`)
-        var filterOn = report.filterOn;
-
-        if (filterOn != undefined) {
-            match = matchAllFilterCatogories(report, data);
-        }
-
+        match = matchAllFilterCatogories(report, data);
+ 
         if (match) {
-            if (options.verbose) {
-                console.log(`FOUND ${data[`Summary`]}`)
-            }
-
+            verboseLog(`FOUND ${data[`Summary`]}`)
             report.itemCount++;
             value = data[`Custom field (Story Points)`]
             if (value != ``) {
                 report.pointsCount += parseInt(value);
                 report.itemsWithPoints++;
-                if (options.verbose) {
-                    console.log(`SP : ${value}`)
-                }
-
+                verboseLog(`SP : ${value}`)
             }
-
         }
     });
-
 }
 
 function verboseLog(msg) {
@@ -120,12 +107,14 @@ function verboseLog(msg) {
 function matchAllFilterCatogories(report, data) {
     var filterOn = report.filterOn;
     var match = true
-    filterOn.forEach(function (filterElement) {
-        var filterValues = report[filterElement];
-        if (matchAnyFilterValue(filterElement, filterValues, data) != true) {
-            match = false;
-        }
-    });
+    if (filterOn != undefined) {
+        filterOn.forEach(function (filterElement) {
+            var filterValues = report[filterElement];
+            if (matchAnyFilterValue(filterElement, filterValues, data) != true) {
+                match = false;
+            }
+        });
+    }
     return match
 }
 

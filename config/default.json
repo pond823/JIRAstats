@@ -1,11 +1,26 @@
 { "reports" :
-	[{
-		"title" : "Outstanding P1 Thundercats Stories",
-		"filter" : ["Priority", "Issue Type", "Status", "Labels"],
+	[
+	{
+		"title" : "Outstanding P1 Stories",
+		"filterOn" : ["Priority", "Issue Type"],			
 		"Priority" : ["P1"],
-		"Issue Type" : ["Story"],
-		"Status" : ["To do"],
-		"Labels" : ["Thundercats"]
+		"Issue Type" : ["Story"]		
+	},
+	{
+		"title" : "Outstanding P2 Stories",
+		"filterOn" : ["Priority", "Issue Type"],
+		"Priority" : ["P2"],
+		"Issue Type" : ["Story"]
+		
+	},
+	{
+		"title" : "Outstanding P1 & P2 Stories",
+		"filterOn" : ["Priority", "Issue Type"],
+		"Priority" : ["P1", "P2"],
+		"Issue Type" : ["Story"]
+		
 	}
+
+
 	]
 }
