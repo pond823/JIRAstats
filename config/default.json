@@ -1,16 +1,11 @@
 { "reports" :
 	[{
-		"title" : "Outstanding P1 Bugs",
-		"filter" : ["Priority", "Issue Type", "Status"],
+		"title" : "Outstanding P1 Thundercats Stories",
+		"filter" : ["Priority", "Issue Type", "Status", "Labels"],
 		"Priority" : ["P1"],
-		"Issue Type" : ["Bug"],
-		"Status" : ["To do"]
-
-
-	},
-	{
-		"title" : "WILL NOT BE PROCESSED"
-
+		"Issue Type" : ["Story"],
+		"Status" : ["To do"],
+		"Labels" : ["Thundercats"]
 	}
 	]
 }

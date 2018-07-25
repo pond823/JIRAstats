@@ -1,4 +1,4 @@
-
+const lowercase = require('lower-case')
 const csv=require('csvtojson')
 const optionDefinitions = [
     { name: 'file', alias: 'f', type: String, defaultValue:'JIRA.csv' },
@@ -13,6 +13,13 @@ const options = commandLineArgs(optionDefinitions)
 var config = require('config');
 
 var reports = config.get("reports");
+reports.forEach(function(element) {
+
+    element.itemCount = 0;
+    element.pointsCount = 0;
+    element.itemsWithPoints = 0;
+    verboseLog (element)
+});
 
 if (options.verbose) { 
     console.log("Options used-")
@@ -58,8 +65,10 @@ csv({noheader:false, headers:headersArray})
 })
 .on('done',() => {
     reports.forEach(function(element) {
+        console.log();
         console.log(element.title);
         console.log(`Tickets : ${element.itemCount} Story Points ${element.pointsCount} Tickets With Points ${element.itemsWithPoints} `)  
+        console.log();
         }
     )
     
@@ -69,48 +78,55 @@ csv({noheader:false, headers:headersArray})
 
 
 function process(data) {
-
+    verboseLog(data)
+    
     reports.forEach(function(element) {
-        console.log(element.title);
-        element.itemCount = 0;
-        element.pointsCount = 0;
-        element.itemsWithPoints = 0;
+
+        verboseLog(`Report - ${element.title}`)
         var filter = element.filter;
+        match = true;
         if (filter != undefined) {
             filter.forEach(function(filterElement) {
-                    console.log(filterElement);
-
-                    var filterValues = element[filterElement];
-                    console.log(element[filterElement]);
-
-                    match = false;
+                     var filterValues = element[filterElement];
+                   
                     if (Array.isArray(filterValues)) {
                         
                         filterValues.forEach(function(value) {
-                            if (data[filterElement] == value) {
-                                match = true;
+                            if (lowercase(data[filterElement]) != lowercase(value)) {
+                                match = false;
+                                verboseLog(`---- ${lowercase(data[filterElement])} != ${lowercase(value)}`)
+                            } else {
+                                verboseLog(`++++ ${lowercase(data[filterElement])} == ${lowercase(value)}`)
                             }
                         });
+                    }
+                });
+            }
 
-                        if (match) {
+            if (match) {
+                            if (options.verbose) {
+                                console.log(`FOUND ${data[`Summary`]}`)
+                            }
+           
                             element.itemCount++;
                             value = data[`Custom field (Story Points)`]
                             if (value != ``) {
                                 element.pointsCount += parseInt(value);
                                 element.itemsWithPoints++;
+                                if (options.verbose) {
+                                    console.log(`SP : ${value}`)
+                                }
                                 
                             }
 
-                        }
-
-
-                    }
-
-
-                });
             }        
      });
 
 }
 
+function verboseLog(msg) {
+    if (options.verbose) {
+        console.log(msg);
+    }
+}
 
