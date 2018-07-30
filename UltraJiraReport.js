@@ -8,6 +8,8 @@ const optionDefinitions = [
 const commandLineArgs = require('command-line-args')
 const firstLine = require('firstline')
 
+var colors = require('colors');
+
 const options = commandLineArgs(optionDefinitions)
 
 var config = require('config');
@@ -21,10 +23,10 @@ reports.forEach(function (element) {
     verboseLog(element)
 });
 
-if (options.verbose) {
-    console.log("Options used-")
-    console.log(options)
-}
+
+verboseLog("Options used-".blue)
+verboseLog(options)
+
 //re-write headers that repeat the same name e.g. Label, Label becomes Label, Label1
 firstLine(options.file, { lineEnding: '\n' }).then((line) => {
     var headers = line.split(`,`)
@@ -42,10 +44,10 @@ firstLine(options.file, { lineEnding: '\n' }).then((line) => {
         }
     }
 
-    if (options.verbose) {
-        console.log("Headers used-")
-        console.log(headers)
-    }
+
+    verboseLog("Headers used-")
+    verboseLog(headers)
+
     extract(headers)
 })
 
@@ -55,19 +57,17 @@ function extract(headersArray) {
         .fromFile(options.file)
         .on('json', (jsonObj) => {
 
-            if (options.verbose) {
-                console.log("Processing " + jsonObj['Issue key'] + "\r")
 
-            }
+            verboseLog("Processing " + jsonObj['Issue key'] + "\r")
 
             process(jsonObj)
 
         })
         .on('done', () => {
             reports.forEach(function (element) {
-                console.log();
+
                 console.log(element.title);
-                console.log(`Tickets : ${element.itemCount} Story Points ${element.pointsCount} Tickets With Points ${element.itemsWithPoints} `)
+                console.log(`Tickets: ${element.itemCount}    Story Points: ${element.pointsCount}   Tickets With Points: ${element.itemsWithPoints} `.green)
                 console.log();
             }
             )
@@ -78,7 +78,6 @@ function extract(headersArray) {
 
 
 function process(data) {
-    verboseLog(data)
 
     reports.forEach(function (report) {
         match = false
@@ -86,13 +85,12 @@ function process(data) {
         match = matchAllFilterCatogories(report, data);
  
         if (match) {
-            verboseLog(`FOUND ${data[`Summary`]}`)
+            verboseLog(`Matched ${data[`Summary`]}`.blue)
             report.itemCount++;
             value = data[`Custom field (Story Points)`]
             if (value != ``) {
                 report.pointsCount += parseInt(value);
                 report.itemsWithPoints++;
-                verboseLog(`SP : ${value}`)
             }
         }
     });
@@ -124,15 +122,29 @@ function matchAnyFilterValue(filterElement, filterValues, data) {
 
         filterValues.forEach(function (value) {
 
+            verboseLog(filterElement)
             if (lowercase(data[filterElement]) == lowercase(value)) {
                 match = true;
                 verboseLog(`++++ ${lowercase(data[filterElement])} == ${lowercase(value)}`)
             } else {
                 verboseLog(`---- ${lowercase(data[filterElement])} != ${lowercase(value)}`)
             }
-        });
 
-        verboseLog(`Match ${match}`)
+            for (i = 0; i < 5; i++) {
+                namedColumn = filterElement + i.toString();
+                if (data[namedColumn] != null) {
+                    verboseLog(namedColumn)
+                    if (lowercase(data[namedColumn]) == lowercase(value)) {
+                        match = true;
+                        verboseLog(`++++ ${lowercase(data[namedColumn])} == ${lowercase(value)}`)
+                    } else {
+                        verboseLog(`---- ${lowercase(data[namedColumn])} != ${lowercase(value)}`)
+                    }
+                } 
+            }
+
+
+        });
     }
     return match
 }
